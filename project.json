@@ -1,0 +1,23 @@
+{
+  "overview": "A full-stack AI-powered adaptive learning companion that guides users through any topic with personalized tutoring, interactive quizzes, progress tracking, and gamification.",
+  "features": [
+    "Internet Identity authentication with user profile setup",
+    "AI-powered adaptive tutor chat with skill level adaptation",
+    "Interactive quiz system with MCQ format and instant feedback",
+    "Visual progress dashboard with charts and weak area tracking",
+    "Gamification with points and badges for learning milestones",
+    "Topic browsing with search, filter, and smart recommendations",
+    "Dark/light mode toggle with responsive mobile-first design"
+  ],
+  "category": "education",
+  "tags": [
+    "learning",
+    "ai-tutor",
+    "quiz",
+    "gamification",
+    "adaptive-learning",
+    "progress-tracking",
+    "education"
+  ],
+  "last_updated": "2026-04-24T16:48:07.667Z"
+}

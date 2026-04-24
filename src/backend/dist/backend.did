@@ -1,0 +1,185 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type WeakArea = 
+ record {
+   attemptCount: nat;
+   averageAccuracy: nat;
+   topicId: TopicId;
+   topicTitle: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProgress = 
+ record {
+   badges: vec Badge;
+   currentStreak: nat;
+   lastActivityAt: Timestamp;
+   longestStreak: nat;
+   topicsCompleted: vec TopicId;
+   totalPoints: nat;
+   userId: UserId;
+ };
+type UserProfile = 
+ record {
+   createdAt: Timestamp;
+   learningGoals: text;
+   name: text;
+   skillLevel: SkillLevel;
+   updatedAt: Timestamp;
+ };
+type UserId = principal;
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type TopicId = nat;
+type TopicCompletion = 
+ record {
+   completedAt: Timestamp;
+   pointsEarned: nat;
+   topicId: TopicId;
+   userId: UserId;
+ };
+type Topic = 
+ record {
+   category: text;
+   createdAt: Timestamp;
+   description: text;
+   difficulty: DifficultyLevel;
+   id: TopicId;
+   title: text;
+ };
+type Timestamp = int;
+type SkillLevel = 
+ variant {
+   advanced;
+   beginner;
+   intermediate;
+ };
+type SessionId = nat;
+type QuizQuestion = 
+ record {
+   correctOptionId: nat;
+   explanation: text;
+   id: nat;
+   options: vec QuizOption;
+   question: text;
+ };
+type QuizOption = 
+ record {
+   id: nat;
+   "text": text;
+ };
+type QuizId = nat;
+type QuizAttempt = 
+ record {
+   accuracy: nat;
+   answers: vec nat;
+   completedAt: Timestamp;
+   id: nat;
+   pointsEarned: nat;
+   quizId: QuizId;
+   score: nat;
+   topicId: TopicId;
+   totalQuestions: nat;
+   userId: UserId;
+ };
+type Quiz = 
+ record {
+   createdAt: Timestamp;
+   id: QuizId;
+   questions: vec QuizQuestion;
+   topicId: TopicId;
+ };
+type ProgressSummary = 
+ record {
+   averageAccuracy: nat;
+   badges: vec Badge;
+   currentStreak: nat;
+   quizAttemptCount: nat;
+   topicsCompletedCount: nat;
+   totalPoints: nat;
+   weakAreas: vec WeakArea;
+ };
+type MessageRole = 
+ variant {
+   assistant;
+   user;
+ };
+type LearningSession = 
+ record {
+   id: SessionId;
+   isActive: bool;
+   messages: vec ChatMessage;
+   startedAt: Timestamp;
+   topicId: TopicId;
+   updatedAt: Timestamp;
+   userId: UserId;
+ };
+type DifficultyLevel = 
+ variant {
+   easy;
+   hard;
+   medium;
+ };
+type ChatMessage = 
+ record {
+   content: text;
+   role: MessageRole;
+   timestamp: Timestamp;
+ };
+type Badge = 
+ variant {
+   firstSteps;
+   perfectScore;
+   quizMaster;
+   streak;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  closeSession: (sessionId: SessionId) -> ();
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getMyProgress: () -> (opt UserProgress) query;
+  getMyQuizAttempts: () -> (vec QuizAttempt) query;
+  getOrCreateSession: (topicId: TopicId) -> (LearningSession);
+  getProgressSummary: () -> (ProgressSummary) query;
+  getQuizForTopic: (topicId: TopicId) -> (opt Quiz) query;
+  getRecommendedTopics: () -> (vec Topic) query;
+  getSessionHistory: (topicId: TopicId) -> (vec ChatMessage) query;
+  getTopic: (topicId: TopicId) -> (opt Topic) query;
+  getTopicCompletionStatus: (topicId: TopicId) -> (opt TopicCompletion) query;
+  getTopicQuizAttempts: (topicId: TopicId) -> (vec QuizAttempt) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  getWeakAreas: () -> (vec WeakArea) query;
+  isCallerAdmin: () -> (bool) query;
+  listTopics: () -> (vec Topic) query;
+  markTopicCompleted: (topicId: TopicId) -> (nat);
+  saveAiGeneratedQuiz: (topicId: TopicId, questions: vec QuizQuestion) ->
+   (Quiz);
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  sendMessage: (topicId: TopicId, userMessage: text) -> (text);
+  submitQuizAttempt: (quizId: QuizId, answers: vec nat) -> (QuizAttempt);
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+}

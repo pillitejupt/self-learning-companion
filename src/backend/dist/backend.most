@@ -1,0 +1,151 @@
+// Version: 1.0.0
+type Badge__1003575244 = {#firstSteps; #perfectScore; #quizMaster; #streak};
+type ChatMessage__559859432 =
+  {
+    content : Text;
+    role : MessageRole__512297421;
+    timestamp : Timestamp__301639476
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DifficultyLevel__141239815 = {#easy; #hard; #medium};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type LearningSession__94846098 =
+  {
+    id : SessionId__1052913375;
+    isActive : Bool;
+    messages : [ChatMessage__559859432];
+    startedAt : Timestamp__301639476;
+    topicId : TopicId__858377695;
+    updatedAt : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type MessageRole__512297421 = {#assistant; #user};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type QuizAttempt__529564763 =
+  {
+    accuracy : Nat;
+    answers : [Nat];
+    completedAt : Timestamp__301639476;
+    id : Nat;
+    pointsEarned : Nat;
+    quizId : QuizId__438791917;
+    score : Nat;
+    topicId : TopicId__858377695;
+    totalQuestions : Nat;
+    userId : UserId__158757552
+  };
+type QuizId__438791917 = Nat;
+type QuizOption__313865416 = {id : Nat; text : Text};
+type QuizQuestion__692474474 =
+  {
+    correctOptionId : Nat;
+    explanation : Text;
+    id : Nat;
+    options : [QuizOption__313865416];
+    question : Text
+  };
+type Quiz__713271105 =
+  {
+    createdAt : Timestamp__301639476;
+    id : QuizId__438791917;
+    questions : [QuizQuestion__692474474];
+    topicId : TopicId__858377695
+  };
+type SessionId__1052913375 = Nat;
+type SkillLevel__1030256550 = {#advanced; #beginner; #intermediate};
+type Timestamp__301639476 = Int;
+type TopicCompletion__101296077 =
+  {
+    completedAt : Timestamp__301639476;
+    pointsEarned : Nat;
+    topicId : TopicId__858377695;
+    userId : UserId__158757552
+  };
+type TopicId__858377695 = Nat;
+type Topic__73063170 =
+  {
+    category : Text;
+    createdAt : Timestamp__301639476;
+    description : Text;
+    difficulty : DifficultyLevel__141239815;
+    id : TopicId__858377695;
+    title : Text
+  };
+type UserId__158757552 = Principal;
+type UserProfile__446616884 =
+  {
+    createdAt : Timestamp__301639476;
+    learningGoals : Text;
+    name : Text;
+    skillLevel : SkillLevel__1030256550;
+    updatedAt : Timestamp__301639476
+  };
+type UserProgress__481995947 =
+  {
+    badges : [Badge__1003575244];
+    currentStreak : Nat;
+    lastActivityAt : Timestamp__301639476;
+    longestStreak : Nat;
+    topicsCompleted : [TopicId__858377695];
+    totalPoints : Nat;
+    userId : UserId__158757552
+  };
+type UserRole__1073662873 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable completions :
+    {
+      var root :
+        Node__46230540<(UserId__158757552, TopicId__858377695),
+                        TopicCompletion__101296077>;
+      var size : Nat__490723111
+    };
+  stable var nextAttemptId : Nat;
+  stable var nextQuizId : Nat;
+  stable var nextSessionId : Nat;
+  stable profiles :
+    {
+      var root : Node__46230540<UserId__158757552, UserProfile__446616884>;
+      var size : Nat__490723111
+    };
+  stable progressMap :
+    {
+      var root : Node__46230540<UserId__158757552, UserProgress__481995947>;
+      var size : Nat__490723111
+    };
+  stable quizAttempts :
+    {
+      var root : Node__46230540<Nat, QuizAttempt__529564763>;
+      var size : Nat__490723111
+    };
+  stable quizzes :
+    {
+      var root : Node__46230540<QuizId__438791917, Quiz__713271105>;
+      var size : Nat__490723111
+    };
+  stable sessions :
+    {
+      var root :
+        Node__46230540<SessionId__1052913375, LearningSession__94846098>;
+      var size : Nat__490723111
+    };
+  stable topics :
+    {
+      var root : Node__46230540<TopicId__858377695, Topic__73063170>;
+      var size : Nat__490723111
+    }
+};
